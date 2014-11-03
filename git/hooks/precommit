@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+allowconflictcommits=$(git config --bool hooks.allowconflictcommits)
+
+# Redirect stdout to stderr
+exec 1>&2
+
+if [ "$allowconflictcommits" != "true" ] &&
+	# Note that the use of brackets around a tr range is ok here, (it's
+	# even required, for portability to Solaris 10's /usr/bin/tr), since
+	# the square bracket bytes happen to fall in the designated range.
+	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}[^\1]*$" $against)
+	test $(echo -n "$conflicts" | wc -c) != 0
+then
+	echo -e "\e[;31m"
+	echo "Commit rejected! Unresolved conflicts detected in the following file(s):"
+	echo
+	for file in $conflicts; do echo "  * $file"; done
+	echo
+	echo "If you know what you're doing, you can disable this check by running:"
+	echo
+	echo "  git config hooks.allowconflictcommits true"
+	echo -e "\e[0m"
+	exit 1
+fi
