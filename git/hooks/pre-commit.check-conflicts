@@ -20,7 +20,7 @@ if [ "$allowconflictcommits" != "true" ] &&
 	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}[^\1]*$" $against)
 	test $(echo -n "$conflicts" | wc -c) != 0
 then
-	echo -e "\e[;31m"
+	echo
 	echo "Commit rejected! Unresolved conflicts detected in the following file(s):"
 	echo
 	for file in $conflicts; do echo "  * $file"; done
@@ -28,6 +28,6 @@ then
 	echo "If you know what you're doing, you can disable this check by running:"
 	echo
 	echo "  git config hooks.allowconflictcommits true"
-	echo -e "\e[0m"
+	echo
 	exit 1
 fi
