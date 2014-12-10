@@ -17,7 +17,7 @@ if [ "$allowconflictcommits" != "true" ] &&
 	# Note that the use of brackets around a tr range is ok here, (it's
 	# even required, for portability to Solaris 10's /usr/bin/tr), since
 	# the square bracket bytes happen to fall in the designated range.
-	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}[^\1]*$" $against)
+	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}[^\1]*.*$" $against)
 	test $(echo -n "$conflicts" | wc -c) != 0
 then
 	echo
