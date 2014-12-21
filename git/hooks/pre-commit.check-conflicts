@@ -14,7 +14,7 @@ allowconflictcommits=$(git config --bool hooks.allowconflictcommits)
 exec 1>&2
 
 if [ "$allowconflictcommits" != "true" ] &&
-	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}[^\1]*.*$" $against)
+	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}(\s+.*)?$" $against)
 	test -n "$conflicts"
 then
 	echo
