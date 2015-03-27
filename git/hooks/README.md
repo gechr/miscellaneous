@@ -8,9 +8,9 @@
 > `git config --global init.templatedir ~/.gittemplates`
 
 **Symlink (or copy) the hooks you want**
-> `ln -s ~/misc/git/hooks/<hook-type>.<hook-name> <hook-type>`
+> `ln -s ~/misc/git/hooks/<hook-type>.<hook-name> ~/.gittemplates/hooks/<hook-type>`
 
-e.g. `ln -s ~/misc/git/hooks/pre-push.linkifier pre-push`
+e.g. `ln -s ~/misc/git/hooks/pre-push.linkifier ~/.gittemplates/hooks/pre-push`
 
 **Make sure the hooks are executable**
 > `chmod +x ~/.gittemplates/hooks/*`
