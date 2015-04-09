@@ -27,7 +27,7 @@ do
     # Get the number of commits
     num_commits="$(git rev-list --count $remote_sha..$local_sha)"
 
-    # Abbreviate SHA1s
+    # Abbreviate SHA1s to 7 characters
     local_sha_abbrev=$(echo "$local_sha" | cut -c1-7)
     remote_sha_abbrev=$(echo "$remote_sha" | cut -c1-7)
 
@@ -48,26 +48,26 @@ do
     if [ "$num_commits" -eq 1 ]; then
         case "$url" in
             *gitweb*)
-                fmt="%s;a=commitdiff;h=%s"
+                diff_fmt=".git;a=commitdiff;h=%s"
                 ;;
             *stash.example.com*)
-                fmt="%s/commits/%s"
+                diff_fmt="/commits/%s"
                 ;;
 
         esac
-        printf "\n $fmt\n\n" "$web_url" "$local_sha_abbrev"
+        printf "\n ${web_url}${diff_fmt}\n\n" "$local_sha_abbrev"
         exit 0
    fi
 
     # Handle multiple commits
     case "$url" in
         *gitweb*)
-            fmt="%s;hp=%s;h=%s"
+            diff_fmt=".git;hp=%s;h=%s"
             ;;
         *stash.example.com*)
-            # Stash doesn't support SHA-level diffs (see STASH-2550)
+            # Stash doesn't currently allow arbitrary diffs between SHA1s on the same branch (STASH-2550)
             ;;
         esac
-    printf "\n $fmt\n\n" "$web_url" "$local_sha_abbrev" "$remote_sha_abbrev"
+    printf "\n ${web_url}${diff_fmt}\n\n" "$local_sha_abbrev" "$remote_sha_abbrev"
 
 done
