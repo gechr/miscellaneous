@@ -23,21 +23,51 @@ url="$2"
 
 while read local_ref local_sha remote_ref remote_sha
 do
+
+    # Get the number of commits
+    num_commits="$(git rev-list --count $remote_sha..$local_sha)"
+
+    # Abbreviate SHA1s
+    local_sha_abbrev=$(echo "$local_sha" | cut -c1-7)
+    remote_sha_abbrev=$(echo "$remote_sha" | cut -c1-7)
+
+    # Handle all commits
     case "$url" in
-        # Only produce links when pushing to 'gitweb.example.com'
         *gitweb*)
-            # Abbreviate SHA1s
-            local_sha_abbrev=$(echo "$local_sha" | cut -c1-7)
-            remote_sha_abbrev=$(echo "$remote_sha" | cut -c1-7)
-            # Count the number of commits
-            num_commits="$(echo "$rev_list" | wc -w)"
-            if [ "$num_commits" -eq 1 ]; then
-                # Handle a single commit
-                printf '\n https://gitweb.example.com/?p=%s.git;a=commitdiff;h=%s\n\n' "${url#*:}" "$local_sha_abbrev"
-            else
-                # Handle multiple commits
-                printf '\n https://gitweb.example.com/?p=%s.git;a=commitdiff;h=%s;hp=%s\n\n' "${url#*:}" "$local_sha_abbrev" "$remote_sha_abbrev"
-            fi
+            web_url="https://gitweb.example.com/?p=${url#*:}"
+            ;;
+        *stash.example.com:7999/~*)
+            web_url="$(echo "$url" | sed -r -e 's%ssh://git@(.+):7999/([^/]+)/(\S+).git%https://\1/\2/repos/\3%' -e 's%~%users/%')"
+            ;;
+        *stash.example.com*)
+            web_url="$(echo "$url" | sed -r 's%ssh://git@(.+):7999/([^/]+)/(\S+).git%https://\1/projects/\2/repos/\3%')"
             ;;
     esac
+
+    # Handle single commits
+    if [ "$num_commits" -eq 1 ]; then
+        case "$url" in
+            *gitweb*)
+                fmt="%s;a=commitdiff;h=%s"
+                ;;
+            *stash.example.com*)
+                fmt="%s/commits/%s"
+                ;;
+
+        esac
+        printf "\n $fmt\n\n" "$web_url" "$local_sha_abbrev"
+        exit 0
+   fi
+
+    # Handle multiple commits
+    case "$url" in
+        *gitweb*)
+            fmt="%s;hp=%s;h=%s"
+            ;;
+        *stash.example.com*)
+            # Stash doesn't support SHA-level diffs (see STASH-2550)
+            ;;
+        esac
+    printf "\n $fmt\n\n" "$web_url" "$local_sha_abbrev" "$remote_sha_abbrev"
+
 done
