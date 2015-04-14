@@ -24,6 +24,8 @@ url="$2"
 while read local_ref local_sha remote_ref remote_sha
 do
 
+    [ "$remote_sha" = "0000000000000000000000000000000000000000" ] && exit
+
     # Get the number of commits
     num_commits="$(git rev-list --count $remote_sha..$local_sha)"
 
