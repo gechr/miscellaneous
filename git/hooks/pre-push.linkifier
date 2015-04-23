@@ -44,6 +44,9 @@ do
         *stash.example.com*)
             web_url="$(echo "$url" | sed -r 's%ssh://git@(.+):7999/([^/]+)/(\S+)(\.git)?%https://\1/projects/\2/repos/\3%')"
             ;;
+        *)
+            exit 0
+            ;;
     esac
 
     # Handle single commits
