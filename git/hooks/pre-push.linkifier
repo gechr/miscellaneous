@@ -51,7 +51,7 @@ do
     esac
 
     # Handle single commits
-    if [ -n "$num_commits"] && [ "$num_commits" -eq 1 ]; then
+    if [ -n "$num_commits" ] && [ "$num_commits" -eq 1 ]; then
         case "$url" in
             *gitweb*)
                 diff_fmt=".git;a=commitdiff;h=%s"
