@@ -34,16 +34,19 @@ do
     local_sha_abbrev=$(echo "$local_sha" | cut -c1-7)
     remote_sha_abbrev=$(echo "$remote_sha" | cut -c1-7)
 
+    # Remove any .git suffixes to make formatting of the web_url easier
+    url="$(echo "$url" | sed 's/\.git$//')"
+
     # Handle all commits
     case "$url" in
         *gitweb*)
             web_url="https://gitweb.example.com/?p=${url#*:}"
             ;;
         *stash.example.com:7999/~*)
-            web_url="$(echo "$url" | sed -r -e 's%^ssh://git@(.+):7999/([^/]+)/([a-z-]+)(\.git)?$%https://\1/\2/repos/\3%' -e 's%~%users/%')"
+            web_url="$(echo "$url" | sed -r -e 's%^ssh://git@(.+):7999/([^/]+)/([a-z-]+)$%https://\1/\2/repos/\3%' -e 's%~%users/%')"
             ;;
         *stash.example.com*)
-            web_url="$(echo "$url" | sed -r 's%^ssh://git@(.+):7999/([^/]+)/([a-z-]+)(\.git)?$%https://\1/projects/\2/repos/\3%')"
+            web_url="$(echo "$url" | sed -r 's%^ssh://git@(.+):7999/([^/]+)/([a-z-]+)$%https://\1/projects/\2/repos/\3%')"
             ;;
         *)
             exit 0
