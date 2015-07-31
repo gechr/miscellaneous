@@ -43,10 +43,10 @@ do
             web_url="https://gitweb.example.com/?p=${url#*:}"
             ;;
         *stash.example.com:7999/~*)
-            web_url="$(echo "$url" | sed -r -e 's%^ssh://git@(.+):7999/([^/]+)/([a-z-]+)$%https://\1/\2/repos/\3%' -e 's%~%users/%')"
+            web_url="$(echo "$url" | sed -r -e 's%^ssh://git@(.+):7999/([^/]+)/(.+)$%https://\1/\2/repos/\3%' -e 's%~%users/%')"
             ;;
         *stash.example.com*)
-            web_url="$(echo "$url" | sed -r 's%^ssh://git@(.+):7999/([^/]+)/([a-z-]+)$%https://\1/projects/\2/repos/\3%')"
+            web_url="$(echo "$url" | sed -r 's%^ssh://git@(.+):7999/([^/]+)/(.+)$%https://\1/projects/\2/repos/\3%')"
             ;;
         *)
             exit 0
