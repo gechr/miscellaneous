@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-#  Hook to print links to Gitweb when pushing. Called by "git push" after it has
+#  Hook to print links to Stash/Gitweb when pushing. Called by "git push" after it has
 #  checked the remote status, but before anything has been pushed. If this script
 #  exits with a non-zero status, nothing will be pushed.
 #
@@ -39,13 +39,13 @@ do
 
     # Handle all commits
     case "$url" in
-        *gitweb*)
-            web_url="https://gitweb.example.com/?p=${url#*:}"
+        *gitweb.gechr.io*)
+            web_url="https://gitweb.gechr.io/?p=${url#*:}"
             ;;
-        *stash.example.com:7999/~*)
+        *stash.gechr.io:7999/~*)
             web_url="$(echo "$url" | sed -r -e 's%^ssh://git@(.+):7999/([^/]+)/(.+)$%https://\1/\2/repos/\3%' -e 's%~%users/%')"
             ;;
-        *stash.example.com*)
+        *stash.gechr.io*)
             web_url="$(echo "$url" | sed -r 's%^ssh://git@(.+):7999/([^/]+)/(.+)$%https://\1/projects/\2/repos/\3%')"
             ;;
         *)
@@ -56,10 +56,10 @@ do
     # Handle single commits
     if [ -n "$num_commits" ] && [ "$num_commits" -eq 1 ]; then
         case "$url" in
-            *gitweb*)
+            *gitweb.gechr.io*)
                 diff_fmt=".git;a=commitdiff;h=%s"
                 ;;
-            *stash.example.com*)
+            *stash.gechr.io*)
                 diff_fmt="/commits/%s"
                 ;;
 
