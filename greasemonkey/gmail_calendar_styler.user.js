@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Gmail Calendar Styler
 // @author   George Christou
-// @include  https://www.google.com/calendar/mgadget?container=gm*
+// @include  http*://calendar.google.com/calendar/mgadget*
 // ==/UserScript==
 
 GM_addStyle('\
