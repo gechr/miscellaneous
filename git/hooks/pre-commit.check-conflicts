@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
@@ -13,14 +13,17 @@ allowconflictcommits=$(git config --bool hooks.allowconflictcommits)
 # Redirect stdout to stderr
 exec 1>&2
 
+# Search cached files for a conflict marker (i.e. <<<<<<< or >>>>>>> or ======= or |||||||)
 if [ "$allowconflictcommits" != "true" ] &&
-	conflicts=$(git diff --cached --name-only -G"^\s*([<>=|])\1{6}(\s+.*)?$" $against)
+	conflicts=$(git diff -z --cached --name-only --diff-filter=AM "$against" | xargs -r0 grep -rlP '^\s*([<>=|])\1{6}(\s+.*)?$')
 	test -n "$conflicts"
 then
 	echo
 	echo "Commit rejected! Unresolved conflicts detected in the following file(s):"
 	echo
-	for file in $conflicts; do echo "  * $file"; done
+	IFS="
+"
+	for file in $conflicts; do echo "  › $file"; done
 	echo
 	echo "If you know what you're doing, you can disable this check by running:"
 	echo
