@@ -39,14 +39,11 @@ do
 
     # Handle all commits
     case "$url" in
-        *gitweb.gechr.io*)
-            web_url="https://gitweb.gechr.io/?p=${url#*:}"
+        *git@github.com:*)
+            web_url="$(echo "$url" | sed -r 's%^git@github.com:(.+)$%https://github.com/\1%')"
             ;;
-        *stash.gechr.io:7999/~*)
-            web_url="$(echo "$url" | sed -r -e 's%^ssh://git@(.+):7999/([^/]+)/(.+)$%https://\1/\2/repos/\3%' -e 's%~%users/%')"
-            ;;
-        *stash.gechr.io*)
-            web_url="$(echo "$url" | sed -r 's%^ssh://git@(.+):7999/([^/]+)/(.+)$%https://\1/projects/\2/repos/\3%')"
+        *https://github.com/*)
+            web_url="$url"
             ;;
         *)
             exit 0
@@ -56,13 +53,9 @@ do
     # Handle single commits
     if [ -n "$num_commits" ] && [ "$num_commits" -eq 1 ]; then
         case "$url" in
-            *gitweb.gechr.io*)
-                diff_fmt=".git;a=commitdiff;h=%s"
+            *github.com*)
+                diff_fmt="/commit/%s"
                 ;;
-            *stash.gechr.io*)
-                diff_fmt="/commits/%s"
-                ;;
-
         esac
         printf "\n ${web_url}${diff_fmt}\n\n" "$local_sha_abbrev"
         exit 0
@@ -70,13 +63,10 @@ do
 
     # Handle multiple commits
     case "$url" in
-        *gitweb*)
-            diff_fmt=".git;hp=%s;h=%s"
+        *github.com*)
+            diff_fmt="/compare/%s...%s"
             ;;
-        *stash.example.com*)
-            # Stash doesn't currently allow arbitrary diffs between SHA1s on the same branch (STASH-2550)
-            ;;
-        esac
+    esac
     printf "\n ${web_url}${diff_fmt}\n\n" "$local_sha_abbrev" "$remote_sha_abbrev"
 
 done
