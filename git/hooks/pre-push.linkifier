@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-#  Hook to print links to Stash/Gitweb when pushing. Called by "git push" after it has
+#  Hook to print links to GitHub when pushing. Called by "git push" after it has
 #  checked the remote status, but before anything has been pushed. If this script
 #  exits with a non-zero status, nothing will be pushed.
 #
@@ -57,7 +57,7 @@ do
                 diff_fmt="/commit/%s"
                 ;;
         esac
-        printf "\n ${web_url}${diff_fmt}\n\n" "$local_sha_abbrev"
+        printf "\n %b${web_url}${diff_fmt}%b\n\n" "\e[1;97m" "$local_sha_abbrev" "\e[0m"
         exit 0
    fi
 
@@ -67,6 +67,6 @@ do
             diff_fmt="/compare/%s...%s"
             ;;
     esac
-    printf "\n ${web_url}${diff_fmt}\n\n" "$local_sha_abbrev" "$remote_sha_abbrev"
+    printf "\n %b${web_url}${diff_fmt}%b\n\n" "\e[1;97m" "$remote_sha_abbrev" "$local_sha_abbrev" "\e[0m"
 
 done
