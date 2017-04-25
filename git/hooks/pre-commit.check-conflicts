@@ -15,7 +15,7 @@ exec 1>&2
 
 # Search cached files for a conflict marker (i.e. <<<<<<< or >>>>>>> or ======= or |||||||)
 if [ "$allowconflictcommits" != "true" ] &&
-	conflicts=$(git diff -z --cached --name-only --diff-filter=AMUR "$against" | xargs -r0 grep -Erl '^\s*(<<<<<<<|>>>>>>>|=======|\|\|\|\|\|\|\|)(\s+.*)?$')
+	conflicts=$(git diff -z --cached --name-only --diff-filter=AMUR "$against" | xargs -r0 grep -sErl '^\s*(<<<<<<<|>>>>>>>|=======|\|\|\|\|\|\|\|)(\s+.*)?$')
 	test -n "$conflicts"
 then
 	echo

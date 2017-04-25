@@ -10,7 +10,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1
 do
 	ref=${local_ref##refs/heads/}
 	# Search cached files for a conflict marker (i.e. <<<<<<< or >>>>>>> or ======= or |||||||)
-	conflicts=$(git diff -z --name-only --diff-filter=AMUR "$ref" "${ref}@{upstream}" | xargs -r0 grep -Erl '^\s*(<<<<<<<|>>>>>>>|=======|\|\|\|\|\|\|\|)(\s+.*)?$')
+	conflicts=$(git diff -z --name-only --diff-filter=AMUR "$ref" "${ref}@{upstream}" | xargs -r0 grep -sErl '^\s*(<<<<<<<|>>>>>>>|=======|\|\|\|\|\|\|\|)(\s+.*)?$')
 	if test -n "$conflicts"
 	then
 		echo
