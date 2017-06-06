@@ -6,5 +6,9 @@
 // ==/UserScript==
 
 GM_addStyle(
-  '.ghx-issue-content { min-height: 0px !important; padding: 10px 10px 10px 38px !important; }'
+  '.ghx-issue-content {' +
+    'min-height: 0px !important;' +
+    'padding: 10px 10px 10px 38px !important;' +
+    'white-space: nowrap;' +
+  '}'
 );
