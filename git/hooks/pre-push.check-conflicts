@@ -8,6 +8,12 @@ exec 1>&2
 
 while read -r local_ref local_sha1 remote_ref remote_sha1
 do
+	case "$local_ref" in
+		refs/heads/*)
+			;;
+		*)
+			continue
+	esac
 	ref=${local_ref##refs/heads/}
 	# Search cached files for a conflict marker (i.e. <<<<<<< or >>>>>>> or ======= or |||||||)
 	conflicts=$(git diff -z --name-only --diff-filter=AMUR "$ref" "${ref}@{upstream}" | xargs -r0 grep -sErl '^\s*(<<<<<<<|>>>>>>>|=======|\|\|\|\|\|\|\|)(\s+.*)?$')
